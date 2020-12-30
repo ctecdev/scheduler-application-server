@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 
 @Data
 @Entity
@@ -16,6 +17,7 @@ public class Task {
     private String name;
     @Column(length = 30)
     private String recurrency;
+    @Lob
     private String code;
 
 }

@@ -35,14 +35,14 @@ public class TaskController {
     @RequestMapping(method=RequestMethod.POST, consumes="application/json")
     public ResponseEntity<Task> saveTask(@RequestBody Task task){
         task.setId(UUID.randomUUID().toString());
-        taskService.save(task);
+        taskService.create(task);
         return new ResponseEntity<>(task, HttpStatus.CREATED);
     }
 
     // UPDATE
     @RequestMapping(method=RequestMethod.PUT, consumes="application/json")
     public ResponseEntity<Task> updateTask(@RequestBody Task task){
-        taskService.save(task);
+        taskService.update(task);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
