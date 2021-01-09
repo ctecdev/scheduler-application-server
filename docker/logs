@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ -z ${ROOT_DIR} ]; then
+    ROOT_DIR="$(pwd)/docker"
+    . "${ROOT_DIR}/docker/setup.inc.sh"
+fi
+
+for arg; do
+    SERVICE="${arg}"
+    SERVICES="${SERVICES}${SERVICE} "
+done
+docker-compose ${DOCKER_COMPOSE_CONFIGS_YML} logs -f ${SERVICES}

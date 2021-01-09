@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [ -z ${ROOT_DIR} ]; then
+    ROOT_DIR="$(pwd)"
+    . "${ROOT_DIR}/docker/setup.inc.sh"
+fi
+
+. "${ROOT_DIR}/docker/stop"
+
+SERVICES=""
+for arg; do
+    SERVICE="${arg}"
+    SERVICES="${SERVICES}${SERVICE} "
+    load_file "${ROOT_DIR}/docker/${SERVICE}/hooks/before-run.sh"
+done
+green_echo "> Running ${SERVICES}"
+docker-compose ${DOCKER_COMPOSE_CONFIGS_YML} build --pull ${SERVICES}
+docker-compose ${DOCKER_COMPOSE_CONFIGS_YML} up --force-recreate --remove-orphans -d ${SERVICES}
+for arg; do
+    SERVICE="${arg}"
+    load_file "${ROOT_DIR}/docker/${SERVICE}/hooks/after-run.sh"
+done
+docker-compose ${DOCKER_COMPOSE_CONFIGS_YML} logs -f ${SERVICES}
+remove_stoped_containers
+sleep 2
+list_containers

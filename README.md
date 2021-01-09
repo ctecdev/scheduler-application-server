@@ -22,3 +22,7 @@
 * IDE - IntelliJ IDEA
 * Visual Studio Code // Angular App development
 * Angular CLI 11.0.5
+
+## Run with Docker
+
+    $> docker/run

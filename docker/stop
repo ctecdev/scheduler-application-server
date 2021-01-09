@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [ -z ${ROOT_DIR} ]; then
+    ROOT_DIR="$(pwd)"
+    . "${ROOT_DIR}/docker/setup.inc.sh"
+fi
+
+SERVICES=""
+SERVICE=""
+for arg; do
+    SERVICE="${arg}"
+    SERVICES="${SERVICES}${SERVICE} "
+    load_file "${ROOT_DIR}/docker/${SERVICE}/hooks/before-stop.sh"
+done
+green_echo "> Stoping ${SERVICES}"
+docker-compose ${DOCKER_COMPOSE_CONFIGS_YML} stop ${SERVICES}
+remove_stoped_containers
+if [ "${PURGE}" = true ]; then
+    echo "Purging.."
+    if [ "${ALL}" = true ]; then
+        echo "Purging all.."
+        stop_all_containers
+    else
+        docker-compose ${DOCKER_COMPOSE_CONFIGS_YML} down --remove-orphans
+    fi
+    remove_untaged_images
+fi;
+for arg; do
+    SERVICE="${arg}"
+    load_file "${ROOT_DIR}/docker/${SERVICE}/hooks/after-stop.sh"
+done
+
+remove_network "${PROJECT_NAME}_custom_network"

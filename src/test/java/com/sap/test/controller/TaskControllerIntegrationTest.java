@@ -38,6 +38,9 @@ public class TaskControllerIntegrationTest {
     public void testGetAllTasks() throws Exception {
         String url = "/api/tasks";
 
+        Task task = new Task("random-id", "random-name","* 5 * * * *", "println \"testing get all\";");
+        taskService.create(task);
+
         MvcResult mvcResult = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         Task[] taskArr = objectMapper.readValue(jsonResponse, Task[].class);

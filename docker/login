@@ -1,0 +1,47 @@
+#!/bin/bash
+
+if [ -z ${ROOT_DIR} ]; then
+    ROOT_DIR="$(pwd)"
+    . "${ROOT_DIR}/docker/setup.inc.sh"
+fi
+
+probe_login() {
+    if [[ $(docker ps -f "name=${1}" --format '{{.Names}}') == ${1} ]]; then
+        docker exec -it ${1} /bin/bash
+        if [ $? -eq 126 ]; then
+            docker exec -it ${1} /bin/sh
+        fi
+        FOUND=true
+    fi
+}
+
+FOUND=false
+for arg; do
+    SERVICE=$arg
+    if [ -d "${ROOT_DIR}/docker/${SERVICE}" ]; then
+        load_file "${ROOT_DIR}/docker/${SERVICE}/hooks/before-login.sh"
+    fi;
+    CONTAINER_NAME="${SERVICE}"
+    if [ "${FOUND}" = false ]; then
+        probe_login ${CONTAINER_NAME}
+    fi;
+    CONTAINER_NAME="${SERVICE}.${PROJECT_NAME}"
+    if [ "${FOUND}" = false ]; then
+        probe_login ${CONTAINER_NAME}
+    fi;
+    CONTAINER_NAME="${SERVICE}.local"
+    if [ "${FOUND}" = false ]; then
+        probe_login ${CONTAINER_NAME}
+    fi;
+    CONTAINER_NAME="${SERVICE}.${PROJECT_NAME}.local"
+    if [ "${FOUND}" = false ]; then
+        probe_login ${CONTAINER_NAME}
+    fi;
+    if [ "${FOUND}" = false ]; then
+        red_echo "Container ${SERVICE} not found !!"
+    fi;
+    if [ -d "${ROOT_DIR}/docker/${SERVICE}" ]; then
+        load_file "${ROOT_DIR}/docker/${SERVICE}/hooks/after-login.sh"
+    fi;
+    exit 0
+done
