@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sap.test</groupId>
-	<artifactId>scheduler-application</artifactId>
+	<artifactId>scheduler-application-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>scheduler-application</name>
+	<name>scheduler-application-server</name>
 	<description>Java Developer SAP test</description>
 
 	<properties>
