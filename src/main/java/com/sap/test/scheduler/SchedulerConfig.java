@@ -11,14 +11,12 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 @Configuration
 public class SchedulerConfig implements SchedulingConfigurer {
 
-//    final Logger LOGGER = LogManager.getLogger(SchedulerConfig.class);
-
     @Value("${thread.pool.task.scheduler.size}")
     private int poolSize;
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
-//        LOGGER.debug("Creating Async Task Scheduler");
+        // Creating Async Task Scheduler
         scheduledTaskRegistrar.setTaskScheduler(taskScheduler());
     }
 
@@ -29,7 +27,7 @@ public class SchedulerConfig implements SchedulingConfigurer {
     public TaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(poolSize);
-        scheduler.setThreadNamePrefix("ThreadPoolTaskScheduler-");
+        scheduler.setThreadNamePrefix("Thread-");
         scheduler.initialize();
         return scheduler;
     }
